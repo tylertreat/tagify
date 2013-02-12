@@ -1,10 +1,12 @@
+//copyright (c) 2013 decipher inc. Please see LICENSE.txt for license information
+
 (function ($) {
 	/*jshint validthis:true */
 
 	'use strict';
 
 	/**
-	 * The entry point to our jquery plugin.  This gets attached to $.fn 
+	 * The entry point to our jquery plugin.  This gets attached to $.fn
 	 * and is called with $('.someSelector').tagify({..opts...})
 	 * @param  {jQuery} $originalInput  A jQuery object of our original input
 	 * @param  {object} options         An object with custom options
@@ -44,7 +46,7 @@
 				regex = null;
 			}
 		
-			this.inputValidation = regex;	
+			this.inputValidation = regex;
 		}
 		
 		//ensure the callbacks are functions
@@ -146,7 +148,7 @@
 		if (this.opts.showPreviewIcon) {
 			previewClass = this._tagList.length ? 'tagify-preview' : 'tagify-preview-disabled';
 			$previewIcon = $('<i class="tagify-preview-icon"></i>').addClass(previewClass).attr('title', this.opts.previewTitle);
-			$tagifyInput.append($previewIcon);	
+			$tagifyInput.append($previewIcon);
 		}
 
 		$tagifyInput.append($input);
@@ -189,8 +191,8 @@
 	 * @return {jQuery}    Returns a jQuery tagify object ready for UI.
 	 */
 	Tagify.prototype.createTagifyView = function createTagifyView() {
-		//createTagifyView genderates the markup for our tagify view.  It's 
-		//responsible for creating the main tagify <div> as well as generating 
+		//createTagifyView genderates the markup for our tagify view.  It's
+		//responsible for creating the main tagify <div> as well as generating
 		//the markup for all the tags, and the input field for adding a tag.
 		var me = this;
 		var $node = $('<div />').addClass('tagify');
@@ -248,13 +250,13 @@
 	};
 
 	/**
-	 * Responsible for binding events and managing what happens when listened 
+	 * Responsible for binding events and managing what happens when listened
 	 * for events occur.
 	 * @param {object} opts    Tagify options object
 	 */
 	Tagify.prototype.addEvents = (function () {
 		/**
-		 * Manages what happens when we attempt to add a tag. Called with the 
+		 * Manages what happens when we attempt to add a tag. Called with the
 		 * main tagify instance as the context.
 		 * @param {string} tag     The tag as a string we want to add.
 		 */
@@ -341,7 +343,7 @@
 			var removeCb = this.opts.removeCb;
 			var $tagifyInput = this.$tagify.find('.tagify-input');
 
-			//listen for clicks on the preview icon (eye icon)	
+			//listen for clicks on the preview icon (eye icon)
 			this.$tagify.on('click', '.tagify-preview', function (evt) {
 				$tagifyInput.val(me.$originalInput.val());
 				$tagifyInput.focus();
@@ -350,7 +352,7 @@
 
 			//listen for clicks on the remove (x on each tag)
 			this.$tagify.on('click', '.tagify-remove', function (evt) {
-				//get a reference to the tag itself				
+				//get a reference to the tag itself
 				var $tag = $(evt.target).closest('.tagify-tag');
 				var tag = $tag.text();
 
@@ -378,7 +380,7 @@
 				}
 			});
 
-			//listen for keypress events on the tagify input.  If a key is 
+			//listen for keypress events on the tagify input.  If a key is
 			//pressed that is in our opts.addNewDelimiter then run all our
 			//add functions and add callback.
 			this.$tagify.on('keypress', '.tagify-input', function (evt) {
@@ -401,7 +403,7 @@
 	})();
 
 	function isAllowedType($input, options) {
-		var allowedTypes = 'input[type=text] textarea'.split(' ');	
+		var allowedTypes = 'input[type=text] textarea'.split(' ');
 		var allowed = true;
 
 		//only tagify certain types of inputs
@@ -426,7 +428,7 @@
 	}
 
 	function tagify(options) {
-		//loop over each thing to be tagified and create a Tagify 
+		//loop over each thing to be tagified and create a Tagify
 		//instance for each thing.
 		return this.each(function () {
 			var $this = $(this);
