@@ -23,7 +23,6 @@
 			removeCb: $.noop,
 			placeholder: '',
 			inputValidation: false,
-			validationMessage: 'Improper input type.  Please check the input and try again.',
 			buttonText: 'go',
 			showButton: false,
 			removeDupes: true,
@@ -430,6 +429,8 @@
 	function tagify(options) {
 		//loop over each thing to be tagified and create a Tagify
 		//instance for each thing.
+		options = options || {};
+		
 		return this.each(function () {
 			var $this = $(this);
 
