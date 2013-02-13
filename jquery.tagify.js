@@ -125,7 +125,7 @@
 	Tagify.prototype.updateOriginalInput = function updateOriginalInput() {
 		this.$originalInput.val($.map(this._tagList, function (tagObj) {
 			return tagObj.tag;
-		}).join(' '));
+		}).join(this.opts.delimiter));
 	};
 
 	/**
