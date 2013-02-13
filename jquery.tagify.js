@@ -27,6 +27,7 @@
 			showButton: false,
 			removeDupes: true,
 			showPreviewIcon: false,
+			maxTagLimit: null,
 			previewTitle: 'Click to view the tag values as a string. Useful for copy / paste into other tagify inputs.'
 		};
 
@@ -60,9 +61,11 @@
 		//some instance variables
 		this.$originalInput = $originalInput;
 		this._tagValues = [];
-		this._tagList = this.splitter(this.$originalInput.val(), this._tagValues);
+		this._tagList = this.splitter(this.$originalInput.val());
 		this.$tagify = this.createTagifyView();
+		this.$tagifyInput = this.$tagify.find('.tagify-input');
 		this.updateOriginalInput();
+		this.setTagifyInputState();
 
 		//dom manipulation
 		this.$originalInput.hide();
@@ -71,6 +74,26 @@
 		//event bindings for tagify.
 		this.addEvents();
 	}
+
+	/**
+	 * If the opts.maxTagLimit is set, then we should disable the tagify input if
+	 * the _tagList.length is greater than or equal to the opts.maxTagLimit.
+	 * @return {undefined} Returns nothing.
+	 */
+	Tagify.prototype.setTagifyInputState = function setTagifyInputState() {
+		if (! this.opts.maxTagLimit) {
+			return;
+		}
+		
+		var numTags = this._tagList.length;
+
+		if (numTags >= this.opts.maxTagLimit) {
+			//disable the input
+			this.$tagifyInput.attr('disabled', true);
+		} else {
+			this.$tagifyInput.attr('disabled', false);
+		}
+	};
 
 	/**
 	 * splitter is a helper function for taking some content,
@@ -282,8 +305,9 @@
 
 
 			//update the orignal hidden input.
-			this.updateOriginalInput();
-			this.setPreviewIcon();
+			me.updateOriginalInput();
+			me.setPreviewIcon();
+			me.setTagifyInputState();
 
 			return tags;
 		}
@@ -328,6 +352,8 @@
 				this.updateOriginalInput();
 				this.setPreviewIcon();
 			}
+
+			this.setTagifyInputState();
 		}
 
 		/**
@@ -401,18 +427,16 @@
 		};
 	})();
 
-	function isAllowedType($input, options) {
+	/**
+	 * Determines if the $input tagify is working on is an expected type. By
+	 * default tagify only operates on text or textarea inputs, as it leverages
+	 * $originalInput.val() to set the value.
+	 * @param  {jquery}  $input  A jQuery object, suspected to be input or textarea
+	 * @return {Boolean}         Returns boolean
+	 */
+	function isAllowedType($input) {
 		var allowedTypes = 'input[type=text] textarea'.split(' ');
 		var allowed = true;
-
-		//only tagify certain types of inputs
-		if (options.allowedTypes) {
-			allowedTypes = options.allowedTypes;
-
-			if (! $.isArray(allowedTypes)) {
-				allowedTypes = [allowedTypes];
-			}
-		}
 		
 		for (var i = 0, len = allowedTypes.length; i < len; i++) {
 			if (! $input.is(allowedTypes[i])) {
@@ -429,12 +453,10 @@
 	function tagify(options) {
 		//loop over each thing to be tagified and create a Tagify
 		//instance for each thing.
-		options = options || {};
-		
 		return this.each(function () {
 			var $this = $(this);
 
-			if (! isAllowedType($this, options)) {
+			if (! isAllowedType($this)) {
 				return;
 			}
 
