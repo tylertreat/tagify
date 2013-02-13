@@ -63,7 +63,7 @@ Examples:
 Show me a Tagify UI with:
 
 * [no options](http://jsfiddle.net/dosl/7PxkD/)
-* [a button for triggering add functions] (http://jsfiddle.net/dosl/QrY8S/)
+* [a button for triggering add functions](http://jsfiddle.net/dosl/QrY8S/)
 * [input validation](http://jsfiddle.net/dosl/4ENs4/)
 * [placeholder text](http://jsfiddle.net/dosl/su4cL/)
 * [add / remove callback functions](http://jsfiddle.net/dosl/pkwh3/)
