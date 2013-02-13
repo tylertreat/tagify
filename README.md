@@ -60,4 +60,11 @@ Optionally you can pass to tagify an options object to control various aspects o
 
 Examples:
 
-Coming soon.
+Show me a Tagify UI with:
+
+* [no options](http://jsfiddle.net/dosl/7PxkD/)
+* [a button for triggering add functions] (http://jsfiddle.net/dosl/QrY8S/)
+* [input validation](http://jsfiddle.net/dosl/4ENs4/)
+* [placeholder text](http://jsfiddle.net/dosl/su4cL/)
+* [add / remove callback functions](http://jsfiddle.net/dosl/pkwh3/)
+* [a preview icon (useful for getting the string value of the original input)](http://jsfiddle.net/dosl/hRGYk/)
