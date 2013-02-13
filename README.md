@@ -58,7 +58,8 @@ Optionally you can pass to tagify an options object to control various aspects o
 		previewTitle: 'Click to view the tag values as a string. Useful for copy / paste into other tagify inputs.'
 	};
 
-Examples:
+Examples
+========
 
 Show me a Tagify UI with:
 
