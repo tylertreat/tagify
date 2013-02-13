@@ -23,8 +23,8 @@ Create a tagified UI control:
 Optionally you can pass to tagify an options object to control various aspects of tagify.  The available options are:
 
 	{
-		//the default class name for each tag
-		className: 'tagify-tag', 
+		//space delimited string of classes to add to tags (allows for custom styling of your tags)
+		addClassToTag: '',
 
 		//the delimiter the original input should be split on to create the tags
 		delimiter: ',',
@@ -56,14 +56,15 @@ Optionally you can pass to tagify an options object to control various aspects o
 		//preview puts the contents of the original input into the tagify input, useful for copying the string value that tagify is creating for you
 		showPreviewIcon: false,
 
+		//a title attribute for the preview icon
+		previewTitle: 'Click to view the tag values as a string. Useful for copy / paste into other tagify inputs.'
+		
 		//if set to a number, only maxTagLimit amount of tags will be allowed.
 		maxTagLimit: null,
 
 		//used as placeholder text for the tagify input if the max tag limit is reached
 		maxTagLimitMsg: 'Max tag limit reached.',
 
-		//a title attribute for the preview icon
-		previewTitle: 'Click to view the tag values as a string. Useful for copy / paste into other tagify inputs.'
 	};
 
 Examples
@@ -78,3 +79,4 @@ Show me a Tagify UI that has:
 * [add / remove callback functions](http://jsfiddle.net/dosl/pkwh3/)
 * [a preview icon (useful for getting the string value of the original input)](http://jsfiddle.net/dosl/hRGYk/)
 * [a max tag limit](http://jsfiddle.net/dosl/uSC7J/)
+* [custom tag styles](http://jsfiddle.net/dosl/bku2S/)

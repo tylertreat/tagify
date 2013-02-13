@@ -16,8 +16,8 @@
 		var regexType;
 		var regex;
 		var defaultOptions = {
-			className: 'tagify-tag',
 			delimiter: ',',
+			addClassToTag: '',
 			addNewDelimiter: [13, 44, 188, 32],
 			addCb: $.noop,
 			removeCb: $.noop,
@@ -34,6 +34,16 @@
 
 		//create the options for this instance of tagify
 		this.opts = $.extend(defaultOptions, options || {});
+
+		//this option shold not be overloaded
+		this.opts.className = 'tagify-tag';
+
+		//normalize the addClassToTag to a list
+		if ($.type(this.opts.addClassToTag) !== 'string') {
+			this.opts.addClassToTag = [];
+		} else {
+			this.opts.addClassToTag = this.opts.addClassToTag.split(' ');
+		}
 
 		//ensure that maxTagLImit is a number
 		if (isNaN(this.opts.maxTagLimit)) {
@@ -198,8 +208,12 @@
 	Tagify.prototype.generateTag = function generateTag(tag, invalid) {
 		var $tag = $('<div />');
 
-		if (this.opts.className) {
-			$tag.addClass(this.opts.className);
+		//must add the className
+		$tag.addClass(this.opts.className);
+
+		//add custom classes
+		if (this.opts.addClassToTag.length) {
+			$tag.addClass(this.opts.addClassToTag.join(' '));
 		}
 
 		if (invalid) {
