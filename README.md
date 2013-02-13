@@ -59,6 +59,9 @@ Optionally you can pass to tagify an options object to control various aspects o
 		//if set to a number, only maxTagLimit amount of tags will be allowed.
 		maxTagLimit: null,
 
+		//used as placeholder text for the tagify input if the max tag limit is reached
+		maxTagLimitMsg: 'Max tag limit reached.',
+
 		//a title attribute for the preview icon
 		previewTitle: 'Click to view the tag values as a string. Useful for copy / paste into other tagify inputs.'
 	};
@@ -66,7 +69,7 @@ Optionally you can pass to tagify an options object to control various aspects o
 Examples
 ========
 
-Show me a Tagify UI with:
+Show me a Tagify UI that has:
 
 * [no options](http://jsfiddle.net/dosl/7PxkD/)
 * [a button for triggering add functions](http://jsfiddle.net/dosl/QrY8S/)
@@ -74,3 +77,4 @@ Show me a Tagify UI with:
 * [placeholder text](http://jsfiddle.net/dosl/su4cL/)
 * [add / remove callback functions](http://jsfiddle.net/dosl/pkwh3/)
 * [a preview icon (useful for getting the string value of the original input)](http://jsfiddle.net/dosl/hRGYk/)
+* [a max tag limit](http://jsfiddle.net/dosl/uSC7J/)

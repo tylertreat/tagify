@@ -28,6 +28,7 @@
 			removeDupes: true,
 			showPreviewIcon: false,
 			maxTagLimit: null,
+			maxTagLimitMsg: 'Max tag limit reached.',
 			previewTitle: 'Click to view the tag values as a string. Useful for copy / paste into other tagify inputs.'
 		};
 
@@ -94,9 +95,9 @@
 
 		if (numTags >= this.opts.maxTagLimit) {
 			//disable the input
-			this.$tagifyInput.attr('disabled', true);
+			this.$tagifyInput.attr('disabled', true).attr('placeholder', this.opts.maxTagLimitMsg);
 		} else {
-			this.$tagifyInput.attr('disabled', false);
+			this.$tagifyInput.attr('disabled', false).attr('placeholder', this.opts.placeholder);
 		}
 	};
 
