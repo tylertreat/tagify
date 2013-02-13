@@ -3,6 +3,8 @@ jQuery.tagify
 
 A simple UI control to turn any text input into a "tagified" UI control.  The value of the input will be split on the specified delimiter and create one tag for each item in the list.
 
+![a simple tagify control](https://raw.github.com/decipherinc/tagify/master/tagify.jpg)
+
 Installation
 ============
 
@@ -39,7 +41,7 @@ Optionally you can pass to tagify an options object to control various aspects o
 		//the placeholder text for the tagify input
 		placeholder: '',
 
-		//a regex to validate tags against (currently does not )
+		//a regex to validate tags against
 		inputValidation: false,
 
 		//button text for taggify button, if it's shown
