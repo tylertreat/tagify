@@ -56,6 +56,9 @@ Optionally you can pass to tagify an options object to control various aspects o
 		//preview puts the contents of the original input into the tagify input, useful for copying the string value that tagify is creating for you
 		showPreviewIcon: false,
 
+		//if set to a number, only maxTagLimit amount of tags will be allowed.
+		maxTagLimit: null,
+
 		//a title attribute for the preview icon
 		previewTitle: 'Click to view the tag values as a string. Useful for copy / paste into other tagify inputs.'
 	};

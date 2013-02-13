@@ -34,6 +34,11 @@
 		//create the options for this instance of tagify
 		this.opts = $.extend(defaultOptions, options || {});
 
+		//ensure that maxTagLImit is a number
+		if (isNaN(this.opts.maxTagLimit)) {
+			this.opts.maxTagLimit = null;
+		}
+
 		//normalize inputValidation to a regex
 		if (this.opts.inputValidation) {
 			regexType = $.type(this.opts.inputValidation);
