@@ -1,5 +1,12 @@
-//copyright (c) 2013 decipher inc. Please see LICENSE.txt for license information
-
+/*
+ * jquery.tagify.js - Create a "tagified" UI control based on text input
+ * Version 0.0.2
+ * @requires jQuery v1.7
+ * 
+ * copyright (c) 2013 decipher inc. 
+ * Examples and docs at: http://decipherinc.github.io/tagify/
+ * Please see LICENSE.txt for license information
+ */
 (function ($) {
 	/*jshint validthis:true */
 
@@ -528,5 +535,6 @@
 	}
 
 	$.fn.tagify = tagify;
+	$.fn.tagify.version = VERSION;
 
 })(jQuery);
