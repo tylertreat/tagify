@@ -508,11 +508,11 @@
             switch (options) {
             case 'reset':
                 return this.each(function () {
-                    var t = $(this).data('tagify-instance');
+					var t = $(this).data('tagify-instance');
 
-                    if (t) {
+					if (t) {
 						t.reset();
-                    }
+					}
                 });
             default:
 				//if we get this far the user has specified a method we
@@ -535,6 +535,5 @@
 	}
 
 	$.fn.tagify = tagify;
-	$.fn.tagify.version = VERSION;
 
 })(jQuery);
