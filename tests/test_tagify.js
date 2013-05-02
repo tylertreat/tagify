@@ -16,7 +16,7 @@
 (function () {
 
 	var tests = {};
-	var val = 'foo@bar.com baz@bar.com flip@flop.com bleep@bloop.com';
+	var val = 'ggoforth@decipherinc.com seth@decipherinc.com dj@decipherinc.com carlos@decipherinc.com';
 	var className = 'emails';
 	var tagifyOpts = {
 		removeCb: sinon.stub(),
@@ -47,14 +47,18 @@
 		QUnit.test('tagify', function () {
 			var $input = $('.' + className);
 			var $fixture = $('#qunit-fixture');
-			var emailToAdd = 'john@doe.com';
+			var emailToAdd = 'amrit@decipherinc.com';
 			var $tagifyInput;
 			var newInputVal;
 
-			QUnit.ok($input.is(':visible'), 'The original input is visible.');
+			QUnit.raises(function () {
+				$input.tagify('foo');
+			}, /foo/, 'Calling tagify with a string argument that has no api should raise an error.');
 
-            //the function under test
 			$input.tagify(tagifyOpts);
+
+			//assert we have a tagify-instance stored on the node
+			QUnit.ok($input.data('tagify-instance'), 'We have the tagify-instance on the node.');
 
 			$tagifyInput = $fixture.find('.tagify-input');
 
@@ -83,7 +87,7 @@
 			newInputVal = $input.val();
 
 			QUnit.equal($fixture.find('.tagify-tag').length, 4, '4 tags shold now be visible.');
-			QUnit.equal($.inArray('foo@bar.com', newInputVal.split(' ')), -1, 'The proper thing has been removed from the original input.');
+			QUnit.equal($.inArray('ggoforth@decipherinc.com', newInputVal.split(' ')), -1, 'The proper thing has been removed from the original input.');
 			QUnit.ok(tagifyOpts.removeCb.calledOnce, 'Should call the specified remove callback.');
 
 			//remove everything and start again by simulating a pasted string
@@ -98,12 +102,15 @@
 			QUnit.equal(tagifyOpts.addCb.callCount, 2, 'The add callback is called the proper amount of times.');
 			QUnit.equal($fixture.find('.tagify-tag').length, val.split(' ').length, 'Pasting a space delimited string should properly parse the input when adding.');
 
+			//test reset method
+			$input.tagify('reset');
+
+			QUnit.equal($fixture.find('.tagify-tag').length, 0, 'There should be no tags after a reset');
+			QUnit.equal($tagifyInput.val(), '', 'The tagify input should be reset');
+			QUnit.equal($input.val(), '', 'The original Tagify input should be reset');
 		});
 	};
 
-
-	$.each(tests, function (name, test) {
-		test();
-	});
+    testutil.executeAll(tests);
 
 })();

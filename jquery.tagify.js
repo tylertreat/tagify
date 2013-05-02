@@ -23,13 +23,15 @@
 			removeCb: $.noop,
 			placeholder: '',
 			inputValidation: false,
+			disallowInvalid: false,
 			buttonText: 'go',
 			showButton: false,
 			removeDupes: true,
 			showPreviewIcon: false,
 			maxTagLimit: null,
 			maxTagLimitMsg: 'Max tag limit reached.',
-			previewTitle: 'Click to view the tag values as a string. Useful for copy / paste into other tagify inputs.'
+			previewTitle: 'Click to view the tag values as a string. Useful for copy / paste into other tagify inputs.',
+			style: {}
 		};
 
 		//create the options for this instance of tagify
@@ -61,10 +63,10 @@
 			} else {
 				regex = null;
 			}
-		
+
 			this.inputValidation = regex;
 		}
-		
+
 		//ensure the callbacks are functions
 		if (! $.isFunction(this.opts.addCb)) {
 			this.opts.addCb = $.noop;
@@ -100,7 +102,7 @@
 		if (! this.opts.maxTagLimit) {
 			return;
 		}
-		
+
 		var numTags = this._tagList.length;
 
 		if (numTags >= this.opts.maxTagLimit) {
@@ -145,6 +147,10 @@
 
 			if (useValidation) {
 				invalid = ! useValidation.test(t);
+
+				if (invalid && me.opts.disallowInvalid) {
+					return;
+				}
 			}
 
 			//track this value
@@ -194,6 +200,10 @@
 		if (this.opts.showButton) {
 			$enter = $('<button></button>').text(this.opts.buttonText);
 			$tagifyInput.append($enter);
+		}
+
+		if (! $.isEmptyObject(this.opts.style)) {
+			$input.css(this.opts.style);
 		}
 
 		return $tagifyInput;
@@ -272,6 +282,18 @@
 	Tagify.prototype.resetTagifyInput = function resetTagifyInput() {
 		this.$tagify.find('.tagify-input').val('');
 	};
+
+    /**
+     * Resets the tagify instance entirely.
+     * @return {undefined} Returns nothing.
+     */
+    Tagify.prototype.reset = function reset() {
+        this.resetTagifyInput();
+        this._tagList = [];
+        this._tagValues = [];
+        this.$tagify.find('.' + this.opts.className).remove();
+		this.updiateOriginalInput();
+    };
 
 	/**
 	 * Should set the proper icon on the preview icon.
@@ -368,7 +390,7 @@
 			if (idx !== -1) {
 				this._tagList.splice(idx, 1);
 				this._tagValues.splice(valueIdx, 1);
-			
+
 				this.updateOriginalInput();
 				this.setPreviewIcon();
 			}
@@ -413,10 +435,10 @@
 			//listen for blur events on the tagify input
 			this.$tagify.on('blur', '.tagify-input', function (evt) {
 				evt.preventDefault();
-				
+
 				var $input = $(evt.target);
 				var tag = $input.val();
-				
+
 				//add the tag
 				var tags = _add.call(me, tag);
 
@@ -457,7 +479,7 @@
 	function isAllowedType($input) {
 		var allowedTypes = 'input[type=text] textarea'.split(' ');
 		var allowed = true;
-		
+
 		for (var i = 0, len = allowedTypes.length; i < len; i++) {
 			if (! $input.is(allowedTypes[i])) {
 				allowed = false;
@@ -470,7 +492,28 @@
 		return allowed;
 	}
 
+
 	function tagify(options) {
+        // for "command"-type calls
+        if ($.type(options) === 'string') {
+            options = options.toLowerCase();
+
+            switch (options) {
+            case 'reset':
+                return this.each(function () {
+                    var t = $(this).data('tagify-instance');
+
+                    if (t) {
+						t.reset();
+                    }
+                });
+            default:
+				//if we get this far the user has specified a method we
+				//don't support via our api.  throw an exception
+				throw 'Specified method "' + options + '" is not provided by the tagify api.';
+            }
+        }
+
 		//loop over each thing to be tagified and create a Tagify
 		//instance for each thing.
 		return this.each(function () {
@@ -480,7 +523,7 @@
 				return;
 			}
 
-			new Tagify($this, options);
+			$this.data('tagify-instance', new Tagify($this, options));
 		});
 	}
 
