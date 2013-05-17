@@ -1,3 +1,4 @@
+
  // Dependencies
  //import /s/jquery183.all.js
 
@@ -20,8 +21,10 @@
 	var tagifyOpts = {
 		removeCb: sinon.stub(),
 		addCb: sinon.stub(),
+		invalidCb: sinon.stub().callsArg(2),
 		placeholder: 'Enter email and press ENTER to add recipient',
 		inputValidation: /.+@.+\..+/,
+		disallowInvalid: true,
 		validationMessage: 'Please enter a proper email address',
 		delimiter: ' ',
 		buttonText: 'add email',
@@ -56,6 +59,9 @@
 
 			$input.tagify(tagifyOpts);
 
+			var inst = $input.data('tagify-instance');
+			sinon.spy(inst, 'forceAdd');
+
 			//assert we have a tagify-instance stored on the node
 			QUnit.ok($input.data('tagify-instance'), 'We have the tagify-instance on the node.');
 
@@ -70,10 +76,15 @@
 			QUnit.equal($input.val(), val, 'The starting value of the original input should remain unchanged.');
 			QUnit.equal($tagifyInput.attr('placeholder'), tagifyOpts.placeholder, 'The proper placeholder is used for the tagify input.');
 
+			//test adding an invalid tag
+			$tagifyInput.val('foo');
+			$tagifyInput.blur();
+			QUnit.ok(tagifyOpts.invalidCb.called, 'the invalid callback is called.');
+			QUnit.ok(inst.forceAdd.called, 'the force function is properly called when envoked from an invalidCb.');
+
 			//test adding a new tag
 			$tagifyInput.val($tagifyInput.val() + ' ' + emailToAdd);
 			$tagifyInput.blur();
-
 			newInputVal = $input.val();
 
 			QUnit.ok(tagifyOpts.addCb.calledOnce, 'Should call the specified add callback.');
@@ -82,7 +93,6 @@
 
 			//test removing a tag
 			$fixture.find('.tagify-remove').eq(0).click();
-
 			newInputVal = $input.val();
 
 			QUnit.equal($fixture.find('.tagify-tag').length, 4, '4 tags shold now be visible.');
@@ -107,6 +117,8 @@
 			QUnit.equal($fixture.find('.tagify-tag').length, 0, 'There should be no tags after a reset');
 			QUnit.equal($tagifyInput.val(), '', 'The tagify input should be reset');
 			QUnit.equal($input.val(), '', 'The original Tagify input should be reset');
+
+			inst.forceAdd.restore();
 		});
 	};
 
