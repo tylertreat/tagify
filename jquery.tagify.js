@@ -8,7 +8,7 @@
  * Please see LICENSE.txt for license information
  */
 (function ($) {
-	/*jshint validthis:true */
+	/*jshint validthis:true, onecase:true */
 
 	'use strict';
 
@@ -26,8 +26,6 @@
 			delimiter: ',',
 			addClassToTag: '',
 			addNewDelimiter: [13, 44, 188, 32],
-			addCb: $.noop,
-			removeCb: $.noop,
 			placeholder: '',
 			inputValidation: false,
 			disallowInvalid: false,
@@ -38,7 +36,12 @@
 			maxTagLimit: null,
 			maxTagLimitMsg: 'Max tag limit reached.',
 			previewTitle: 'Click to view the tag values as a string. Useful for copy / paste into other tagify inputs.',
-			style: {}
+			style: {},
+
+			//various callbacks
+			addCb: $.noop,
+			removeCb: $.noop,
+			invalidCb: $.noop
 		};
 
 		//create the options for this instance of tagify
@@ -86,7 +89,7 @@
 		//some instance variables
 		this.$originalInput = $originalInput;
 		this._tagValues = [];
-		this._tagList = this.splitter(this.$originalInput.val());
+		this._tagList = this.splitter(this.$originalInput.val(), true);
 		this.$tagify = this.createTagifyView();
 		this.$tagifyInput = this.$tagify.find('.tagify-input');
 		this.updateOriginalInput();
@@ -124,10 +127,11 @@
 	 * splitter is a helper function for taking some content,
 	 * splitting by a specified delimiter, and tracking the
 	 * values for future interogation (like removing dupes).
-	 * @param  {string} content    A opts.delimter delimited string (emails)
-	 * @return {object}            Returns an object with the tag and it's validity
+	 * @param  {string} content        A opts.delimter delimited string (emails)
+	 * @param  {bool}   ignoreInvalid  If true, opts.disallowInvalid is ignored
+	 * @return {object}                Returns an object with the tag and it's validity
 	 */
-	Tagify.prototype.splitter = function splitter(content) {
+	Tagify.prototype.splitter = function splitter(content, ignoreInvalid) {
 		if (! content) {
 			return [];
 		}
@@ -155,7 +159,8 @@
 			if (useValidation) {
 				invalid = ! useValidation.test(t);
 
-				if (invalid && me.opts.disallowInvalid) {
+				if (invalid && me.opts.disallowInvalid && ! ignoreInvalid) {
+					me.opts.invalidCb(t, me.$tagifyInput, $.proxy(me.forceAdd, me));
 					return;
 				}
 			}
@@ -168,6 +173,27 @@
 				invalid: invalid
 			};
 		});
+	};
+
+	/**
+	 * Force the addition of the a tag, regardless of disallowInvalid option
+	 * @param  {string}    tag The invalid tag string
+	 * @return {undefined}     Returns nothing
+	 */
+	Tagify.prototype.forceAdd = function forceAdd(tag) {
+		var oldDisallowInvalid = this.opts.disallowInvalid;
+
+		//set the value to tag (which may have been modified at some point by the provided callback)
+		this.$tagifyInput.val(tag);
+
+		//allow invalid tags (this is the "force")
+		this.opts.disallowInvalid = false;
+
+		//trigger the forceAdd on $tagify to trigger adding the tag
+		this.$tagifyInput.trigger('forceAdd');
+
+		//reset disallowInvalid to whatever it was previously
+		this.opts.disallowInvalid = oldDisallowInvalid;
 	};
 
 	/**
@@ -299,7 +325,7 @@
         this._tagList = [];
         this._tagValues = [];
         this.$tagify.find('.' + this.opts.className).remove();
-		this.updiateOriginalInput();
+		this.updateOriginalInput();
     };
 
 	/**
@@ -440,10 +466,10 @@
 			});
 
 			//listen for blur events on the tagify input
-			this.$tagify.on('blur', '.tagify-input', function (evt) {
+			this.$tagify.on('blur forceAdd', '.tagify-input', function (evt) {
 				evt.preventDefault();
 
-				var $input = $(evt.target);
+				var $input = me.$tagifyInput;
 				var tag = $input.val();
 
 				//add the tag
@@ -464,7 +490,7 @@
 				if ($.inArray(which, me.opts.addNewDelimiter) !== -1) {
 					evt.preventDefault();
 
-					$input = $(evt.target);
+					$input = me.$tagifyInput;
 					var tag = $input.val();
 					var tags = _add.call(me, tag);
 
@@ -508,11 +534,11 @@
             switch (options) {
             case 'reset':
                 return this.each(function () {
-					var t = $(this).data('tagify-instance');
+                    var t = $(this).data('tagify-instance');
 
-					if (t) {
+                    if (t) {
 						t.reset();
-					}
+                    }
                 });
             default:
 				//if we get this far the user has specified a method we

@@ -38,6 +38,19 @@ Optionally you can pass to tagify an options object to control various aspects o
 		//callback to be run immediately after a tag has been removed 
 		removeCb: $.noop,
 
+		//callback to be run when a tag is found to be invalid.  Is passed the tag string, the tagify input jquery object,
+		//and a force function that allows you to add the invalid tag (or a fixed up version of it) easily.
+		//Example:
+		//	function invalidCb (tag, $input, force) {
+		//		//tag was found to be invalid because it has spaces (see inputValidation option),
+		//		//fixup the tag and then force it's addition.  Note: you don't have to fix anything
+		//		//up, you can simply call force(tag) to add the "invalid" tag based on the inputValidation
+		//		//regex.
+		//		tag = tag.replace(' ', '-');
+		//		force(tag);   
+		//	}
+		invalidCb: $.noop,
+
 		//the placeholder text for the tagify input
 		placeholder: '',
 
