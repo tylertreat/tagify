@@ -170,7 +170,8 @@
 
 			return {
 				tag: t,
-				invalid: invalid
+				invalid: invalid,
+                selected: false
 			};
 		});
 	};
@@ -465,6 +466,29 @@
 				$tag.remove();
 			});
 
+            this.$tagify.on('click', '.tagify-tag', function (evt) {
+
+                function toggle(selected, tag) {
+                    $.each(me._tagList, function (idx, tagObject) {
+                        if (tagObject.tag === tag) {
+                            tagObject.selected = selected;
+                        }
+                    });
+                }
+
+                var $tag = $(evt.target);
+                var tag = $tag.text();
+                if ($tag.hasClass('tagify-selected')) {
+                    // Unselect the clicked tag
+                    $tag.removeClass('tagify-selected');
+                    toggle(false, tag); 
+                } else {
+                    // Select the clicked tag
+                    $tag.addClass('tagify-selected');
+                    toggle(true, tag); 
+                }
+            });
+
 			//listen for blur events on the tagify input
 			this.$tagify.on('blur forceAdd', '.tagify-input', function (evt) {
 				evt.preventDefault();
@@ -540,15 +564,15 @@
 						t.reset();
                     }
                 });
-            case 'getvalues':
-                var values = [];
+            case 'tags':
+                var tags = [];
                 this.each(function () {
                     var t = $(this).data('tagify-instance');
-                    $.each(t._tagList, function (idx, tagObject) {
-                        values.push(tagObject.tag);
+                    $.each(t._tagList, function (idx, tag) {
+                        tags.push(tag);
 			        });
                 });
-                return values;
+                return tags;
             default:
 				//if we get this far the user has specified a method we
 				//don't support via our api.  throw an exception
