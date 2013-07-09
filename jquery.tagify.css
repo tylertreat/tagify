@@ -23,6 +23,7 @@
 	-webkit-border-radius: 3px;
 	border-radius: 3px; 	
 	background-color: #E5E5E5;
+    cursor: pointer;
 }
 
 .tagify-selected {
