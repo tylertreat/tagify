@@ -139,7 +139,17 @@
             QUnit.ok(!tagObject.selected, 'The tag should not be selected');
         });
 
+        //test toggling does not work when disabled
+        var $tag = $fixture.find('.tagify-tag').eq(0);
+
+        $tag.click();
+        var tag = $input.tagify('tags')[0];
+
+        QUnit.ok(!$tag.hasClass('tagify-selected'), 'The tag should not have the selected class');
+        QUnit.ok(!tag.selected, 'The tag should not be selected');
+
         //test toggling a tag on 
+        $input.tagify($.extend(tagifyOpts, {toggle: true}));
 		var $tag = $fixture.find('.tagify-tag').eq(0);
         
         $tag.click();
