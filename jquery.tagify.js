@@ -466,6 +466,7 @@
 				$tag.remove();
 			});
 
+            //listen for clicks on the tag
             this.$tagify.on('click', '.tagify-tag', function (evt) {
 
                 function toggle(selected, tag) {
@@ -479,11 +480,11 @@
                 var $tag = $(evt.target);
                 var tag = $tag.text();
                 if ($tag.hasClass('tagify-selected')) {
-                    // Unselect the clicked tag
+                    //unselect the clicked tag
                     $tag.removeClass('tagify-selected');
                     toggle(false, tag); 
                 } else {
-                    // Select the clicked tag
+                    //select the clicked tag
                     $tag.addClass('tagify-selected');
                     toggle(true, tag); 
                 }
