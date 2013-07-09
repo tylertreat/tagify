@@ -568,9 +568,12 @@
                 var tags = [];
                 this.each(function () {
                     var t = $(this).data('tagify-instance');
-                    $.each(t._tagList, function (idx, tag) {
-                        tags.push(tag);
-			        });
+
+                    if (t) {
+                        $.each(t._tagList, function (idx, tag) {
+                            tags.push(tag);
+                        });
+                    }
                 });
                 return tags;
             default:
