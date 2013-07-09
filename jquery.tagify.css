@@ -22,7 +22,7 @@
 	font-weight: normal;
 	-webkit-border-radius: 3px;
 	border-radius: 3px; 	
-	background-color: #E5E5E5;
+    background-color: #E5E5E5;
     cursor: pointer;
 }
 
@@ -48,7 +48,7 @@
 
 .tagify-selected .tagify-remove {
     background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAMCAYAAABSgIzaAAAAsElEQVR42q3SbQ9DMBQFYL++dNimUjHBLGa01388lC7ZC5G9fOiXpk/uuSd1+r7HN8f5HZJCncWIsxqKHh7pG0opkJxb0CLUDdKAgTEXYWrxiArBxzsGHlfoaCUqdRckvsVJgSyakRflaPTGjhMO2QQmdHxHy+WM8fLIs9DF/nSF2mzV7GSRd5AQ/h3X0LTaaotSPO9kYkt/jmwm62VopnHsXoqgroIM+Nz0fz/Ah2cAPjbr7vCz9+gAAAAASUVORK5CYII=) 0 0 no-repeat;
-
+}
 
 .tagify-tag.invalid .tagify-remove {
 	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAA3NCSVQICAjb4U%2FgAAAAGXRFWHRTb2Z0d2FyZQBnbm9tZS1zY3JlZW5zaG907wO%2FPgAAAPFJREFUGJVj%2FP%2FiBQMhwERQBUzR%2F19PLh%2FcdPnlj%2F8w4b%2Bfrp7Yv%2Bfh138IRf%2B%2B3Lt7%2F%2FrZnSvOv%2Frxn4Hh78eLB7duufHw2oO3EG2MEDf9%2F%2F5kz%2FY95z4xiWtban48c%2BDJT3YZixgHDREWJEUMDAz%2Ffzzbv3P36ff%2FGRgY2KUtYhyhKlAczsjKI8TDChEUEhPhZYHLwBX9%2FXTxwJadj3%2BxS6ip8%2F57fn7bqguvfv5HVvTv65WDW3c8%2FsUuYxHrauXv5WLI9%2B%2FZhR0rL779hWTSv7%2F%2FmHllLWIdNYSZGRg5ZVw8nQ35Wf%2F9%2Bwsxi5FqIQ4Aydhxa1QwgSQAAAAASUVORK5CYII%3D) 0 0 no-repeat;
