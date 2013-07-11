@@ -33,6 +33,7 @@
 			showButton: false,
 			removeDupes: true,
 			showPreviewIcon: false,
+            toggle: false,
 			maxTagLimit: null,
 			maxTagLimitMsg: 'Max tag limit reached.',
 			previewTitle: 'Click to view the tag values as a string. Useful for copy / paste into other tagify inputs.',
@@ -41,7 +42,8 @@
 			//various callbacks
 			addCb: $.noop,
 			removeCb: $.noop,
-			invalidCb: $.noop
+			invalidCb: $.noop,
+            toggleCb: $.noop
 		};
 
 		//create the options for this instance of tagify
@@ -77,6 +79,11 @@
 			this.inputValidation = regex;
 		}
 
+        //add the toggle class if enabled
+        if (this.opts.toggle) {
+            this.opts.addClassToTag.push('tagify-toggle');
+        }
+
 		//ensure the callbacks are functions
 		if (! $.isFunction(this.opts.addCb)) {
 			this.opts.addCb = $.noop;
@@ -85,6 +92,10 @@
 		if (! $.isFunction(this.opts.removeCb)) {
 			this.opts.removeCb = $.noop;
 		}
+
+        if (! $.isFunction(this.opts.toggleCb)) {
+            this.opts.toggleCb = $.noop;
+        }
 
 		//some instance variables
 		this.$originalInput = $originalInput;
@@ -140,6 +151,19 @@
 		var tags = content.split(this.opts.delimiter);
 		var useValidation = me.opts.inputValidation;
 
+        function containsTag(tag) {
+            if (me._tagList === undefined) {
+                return false;
+            }
+            for (var i = 0; i < me._tagList.length; i++) {
+                var tagObject = me._tagList[i];
+                if (tagObject.tag === tag) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
 		return $.map(tags, function (t, idx) {
 			var invalid;
 
@@ -149,11 +173,15 @@
 				return;
 			}
 
-			if (me.opts.removeDupes) {
-				if ($.inArray(t, me._tagValues) !== -1) {
-					//it's a tag that's already been seen, so do not add it.
-					return;
-				}
+            var select = false;
+            if (t.indexOf('!') == 0 && t.length > 1) {
+                t = t.substring(1);
+                select = true;
+            }
+
+			if (me.opts.removeDupes && containsTag(t)) {
+                //it's a tag that's already been seen, so do not add it.
+                return;
 			}
 
 			if (useValidation) {
@@ -170,7 +198,8 @@
 
 			return {
 				tag: t,
-				invalid: invalid
+				invalid: invalid,
+                selected: select
 			};
 		});
 	};
@@ -246,13 +275,18 @@
 	 * Generates one jQuery tag object used for display in the UI.
 	 * @param  {string} tag     The tag name used for display in the UI.
 	 * @param  {bool} invalid   Is this a valid tag?
+     * @param  {bool} selected  Is this tag selected?
 	 * @return {jQuery}         Returns the jQuery tag object.
 	 */
-	Tagify.prototype.generateTag = function generateTag(tag, invalid) {
+	Tagify.prototype.generateTag = function generateTag(tag, invalid, selected) {
 		var $tag = $('<div />');
 
 		//must add the className
 		$tag.addClass(this.opts.className);
+
+        if (selected) {
+            $tag.addClass('tagify-selected');
+        }
 
 		//add custom classes
 		if (this.opts.addClassToTag.length) {
@@ -283,7 +317,7 @@
 		var $node = $('<div />').addClass('tagify');
 
 		$.each(this._tagList, function (idx, c) {
-			var $tag = me.generateTag(c.tag, c.invalid);
+			var $tag = me.generateTag(c.tag, c.invalid, c.selected);
 
 			//add the $tag to the main $tagify node
 			$node.append($tag);
@@ -300,10 +334,11 @@
 	 * as the context.
 	 * @param  {string} tag     The string representation of the tag
 	 * @param  {bool} invalid   Is this a valid or invalid tag?
+     * @param  {bool} selected  Is this tag selected?
 	 * @return {undefined}      Returns nothing.
 	 */
-	Tagify.prototype.addTagToView = function addTagToView(tag, invalid) {
-		var $tag = this.generateTag(tag, invalid);
+	Tagify.prototype.addTagToView = function addTagToView(tag, invalid, selected) {
+		var $tag = this.generateTag(tag, invalid, selected);
 
 		this.$tagify.find('.tagify-input-container').before($tag);
 	};
@@ -370,7 +405,7 @@
 
 			//add each tag to the view
 			$.each(tags, function (idx, tag) {
-				me.addTagToView(tag.tag, tag.invalid);
+				me.addTagToView(tag.tag, tag.invalid, tag.selected);
 			});
 
 			//keep the internal _tagList up to date
@@ -441,6 +476,8 @@
 			var me = this;
 			var addCb = this.opts.addCb;
 			var removeCb = this.opts.removeCb;
+            var toggleCb = this.opts.toggleCb;
+            var toggle = this.opts.toggle;
 			var $tagifyInput = this.$tagify.find('.tagify-input');
 
 			//listen for clicks on the preview icon (eye icon)
@@ -464,6 +501,34 @@
 				//remove the tag from the alert
 				$tag.remove();
 			});
+
+            if (toggle) {
+                //listen for clicks on the tag if toggleable
+                this.$tagify.on('click', '.tagify-tag', function (evt) {
+
+                    function toggle(selected, tag) {
+                        $.each(me._tagList, function (idx, tagObject) {
+                            if (tagObject.tag === tag) {
+                                tagObject.selected = selected;
+                            }
+                        });
+                    }
+
+                    var $tag = $(evt.target);
+                    var tag = $tag.text();
+                    if ($tag.hasClass('tagify-selected')) {
+                        //unselect the clicked tag
+                        $tag.removeClass('tagify-selected');
+                        toggle(false, tag);
+                        toggleCb.call(me.$originalInput[0], $tag, false);
+                    } else {
+                        //select the clicked tag
+                        $tag.addClass('tagify-selected');
+                        toggle(true, tag); 
+                        toggleCb.call(me.$originalInput[0], $tag, true);
+                    }
+                });
+            }
 
 			//listen for blur events on the tagify input
 			this.$tagify.on('blur forceAdd', '.tagify-input', function (evt) {
@@ -540,15 +605,18 @@
 						t.reset();
                     }
                 });
-            case 'getvalues':
-                var values = [];
+            case 'tags':
+                var tags = [];
                 this.each(function () {
                     var t = $(this).data('tagify-instance');
-                    $.each(t._tagList, function (idx, tagObject) {
-                        values.push(tagObject.tag);
-			        });
+
+                    if (t) {
+                        $.each(t._tagList, function (idx, tag) {
+                            tags.push(tag);
+                        });
+                    }
                 });
-                return values;
+                return tags;
             default:
 				//if we get this far the user has specified a method we
 				//don't support via our api.  throw an exception
