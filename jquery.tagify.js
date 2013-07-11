@@ -42,7 +42,8 @@
 			//various callbacks
 			addCb: $.noop,
 			removeCb: $.noop,
-			invalidCb: $.noop
+			invalidCb: $.noop,
+            toggleCb: $.noop
 		};
 
 		//create the options for this instance of tagify
@@ -91,6 +92,10 @@
 		if (! $.isFunction(this.opts.removeCb)) {
 			this.opts.removeCb = $.noop;
 		}
+
+        if (! $.isFunction(this.opts.toggleCb)) {
+            this.opts.toggleCb = $.noop;
+        }
 
 		//some instance variables
 		this.$originalInput = $originalInput;
@@ -471,6 +476,7 @@
 			var me = this;
 			var addCb = this.opts.addCb;
 			var removeCb = this.opts.removeCb;
+            var toggleCb = this.opts.toggleCb;
             var toggle = this.opts.toggle;
 			var $tagifyInput = this.$tagify.find('.tagify-input');
 
@@ -513,11 +519,13 @@
                     if ($tag.hasClass('tagify-selected')) {
                         //unselect the clicked tag
                         $tag.removeClass('tagify-selected');
-                        toggle(false, tag); 
+                        toggle(false, tag);
+                        toggleCb.call(me.$originalInput[0], $tag, false);
                     } else {
                         //select the clicked tag
                         $tag.addClass('tagify-selected');
                         toggle(true, tag); 
+                        toggleCb.call(me.$originalInput[0], $tag, true);
                     }
                 });
             }
