@@ -241,7 +241,7 @@
 	 * @return {jQuery}         Returns a jquery object of the input
 	 */
 	Tagify.prototype.tagifyInput = function tagifyInput() {
-		var $tagifyInput = $('<div class="tagify-input-container" />');
+		var $tagifyInput = $('<div class="tagify-input-container input-append" />');
 		var $input = $('<input type="text" class="tagify-input" />');
 		var $enter;
 		var $previewIcon;
@@ -258,6 +258,11 @@
 		}
 
 		$tagifyInput.append($input);
+        $btnGroup = $('<div class="btn-group"></div>');
+        $btn = $('<button class="btn dropdown-toggle" data-toggle="dropdown">Contains <span class="caret"></span></button>');
+        $ul = $('<ul class="dropdown-menu"><li><a href="#">Contains</a></li><li><a href="#">Equals</a></li></ul>');
+        $btnGroup.append($btn).append($ul);
+        $tagifyInput.append($btnGroup);
 
 		if (this.opts.showButton) {
 			$enter = $('<button></button>').text(this.opts.buttonText);
